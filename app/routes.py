@@ -1,17 +1,25 @@
 
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, TaskForm, SubtaskForm
+from app.models import User, Task, Subtask
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.urls import url_parse
 
 @app.route('/')
-@app.route('/index')
-#@login_required
+@app.route('/index', methods=['GET', 'POST'])
+@login_required
 def index():
-	tasks = [{'task_name':"task_1"},{'task_name':"task_2"}]
-	return  render_template('index.html', title='Home',tasks = tasks)
+	form = TaskForm()
+	if form.validate_on_submit():
+		task = Task(name=form.task.data, doer=current_user)
+		db.session.add(task)
+		db.session.commit()
+		flash('Your task is added!')
+		return redirect(url_for('index'))
+
+	tasks = Task.query.filter_by(user_id = current_user.id)
+	return  render_template('index.html', title='Home',form=form,tasks = tasks)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -64,3 +72,18 @@ def user(username):
 	{'author': user, 'body': 'Test post #2'}
 	]
 	return render_template('user.html', user=user, posts=posts)
+
+@app.route('/task/<id>', methods=['GET', 'POST'])
+@login_required
+def task(id):
+	form = SubtaskForm()
+	task = Task.query.filter_by(id=id).first()
+	if form.validate_on_submit():
+		subtask = Subtask(name=form.subtask.data, task=task)
+		db.session.add(subtask)
+		db.session.commit()
+		flash('Your subtask is added!')
+		return redirect(url_for('task',id=id))
+	
+	subtasks = Subtask.query.filter_by(task_id=id)
+	return render_template('task.html', form=form, task = task, subtasks = subtasks)
