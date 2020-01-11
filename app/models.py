@@ -21,23 +21,41 @@ class User(UserMixin, db.Model):
 		return check_password_hash(self.password_hash, password)
 
 class Task(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    subtasks = db.relationship('Subtask', backref='task', lazy='dynamic')
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(50))
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	subtasks = db.relationship('Subtask', backref='task', lazy='dynamic')
 
-    def __repr__(self):
-        return '<Task {}>'.format(self.name)
+	def __repr__(self):
+		return '<Task {}>'.format(self.name)
+	
+	def completion_percent(self):
+		n_subtasks = Subtask.query.filter_by(task_id=self.id).count()
+		nc_subtasks = Subtask.query.filter_by(task_id=self.id,status=1).count()
+		return nc_subtasks/n_subtasks
 
 class Subtask(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(50))
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+	#1 is task complete, 0 is task incomplete 
+	status = db.Column(db.Integer, index=True, default=0)
+	task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
+
+	def __repr__(self):
+		return '<Subtask {} {}>'.format(self.name, self.status)
+
+	def check(self):
+		self.status=1
+		db.session.commit()
 	
-    def __repr__(self):
-        return '<Subtask {}>'.format(self.name)
+	def uncheck(self):
+		self.status=0
+		db.session.commit()
+	
+   
+	
 	
 @login.user_loader
 def load_user(id):

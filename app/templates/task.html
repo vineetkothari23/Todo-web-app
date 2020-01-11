@@ -2,6 +2,7 @@
 
 {% block content %}
 	<h1>{{ task.name }}</h1>
+	<h1>{{ task.completion_percent() }}</h1>
 	<form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
@@ -13,7 +14,18 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-	{% for subtask in subtasks %}
-		<div><p>{{ subtask.name }}</p></div>
-	{% endfor %}
+    <form method="POST" action="">
+	    {% for subtask in c_subtasks %}
+            <p>
+                <input type="checkbox" name="status_checkbox" value="{{ subtask.id }}" checked>{{ subtask.name }}, {{ subtask.status }}
+            </p>
+	    {% endfor %}
+	    {% for subtask in uc_subtasks %}
+            <p>
+                <input type="checkbox" name="status_checkbox" value="{{ subtask.id }}">{{ subtask.name }}
+            </p>
+	    {% endfor %}
+	    
+	<input type="submit" name="Submit">
+     </form>
 {% endblock %}

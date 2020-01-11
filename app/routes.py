@@ -1,7 +1,7 @@
 
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm, TaskForm, SubtaskForm
+from app.forms import LoginForm, RegistrationForm, TaskForm, SubtaskForm, SubtaskCompletionForm
 from app.models import User, Task, Subtask
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.urls import url_parse
@@ -67,15 +67,13 @@ def register():
 @login_required
 def user(username):
 	user = User.query.filter_by(username=username).first_or_404()
-	posts = [
-	{'author': user, 'body': 'Test post #1'},
-	{'author': user, 'body': 'Test post #2'}
-	]
-	return render_template('user.html', user=user, posts=posts)
+	tasks = Task.query.filter_by(user_id=user.id)
+	return render_template('user.html', user=user, tasks=tasks)
 
 @app.route('/task/<id>', methods=['GET', 'POST'])
 @login_required
 def task(id):
+	#Adding a new subtask
 	form = SubtaskForm()
 	task = Task.query.filter_by(id=id).first()
 	if form.validate_on_submit():
@@ -84,6 +82,32 @@ def task(id):
 		db.session.commit()
 		flash('Your subtask is added!')
 		return redirect(url_for('task',id=id))
+		
+	#Getting completed subtasks via checkboxes	
+	if request.method=='POST':
+		checked_ids=request.form.getlist('status_checkbox')
+		all_subtasks=Subtask.query.filter_by(task_id=id)
+		for subtask in all_subtasks:
+			if str(subtask.id) in checked_ids:
+				subtask.check()
+			else:
+				subtask.uncheck()
+			
+		return redirect(url_for('task', id=id))
+	#checked_subtasks, unchecked_subtasks
+	uc_subtasks = Subtask.query.filter_by(task_id=id, status=0)
+	c_subtasks = Subtask.query.filter_by(task_id=id, status=1)
+	return render_template('task.html', form=form, task = task, c_subtasks = c_subtasks, uc_subtasks=uc_subtasks)
 	
-	subtasks = Subtask.query.filter_by(task_id=id)
-	return render_template('task.html', form=form, task = task, subtasks = subtasks)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

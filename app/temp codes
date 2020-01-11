@@ -1,0 +1,8 @@
+<div><input class="form-check-input" type="checkbox" id = "{{ subtask.id }}" name="subtask_checkbox" value="{{subtask.id}}">
+              <label class="form-check-label" for="{{ subtask.id }}">{{subtask.name}}, {{ subtask.status }}</label></div>
+
+routes.py
+complete_subtasks_ids = request.form.getlist("subtask_checkbox")
+	for id in complete_subtasks_ids:
+		st=Subtask.query.filter_by(id=id)
+		st.check()

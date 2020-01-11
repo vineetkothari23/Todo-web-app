@@ -3,9 +3,9 @@
 {% block content %}
     <h1>User: {{ user.username }}</h1>
     <hr>
-    {% for post in posts %}
+    {% for task in tasks %}
     <p>
-    {{ post.author.username }} says: <b>{{ post.body }}</b>
+    {{ task.name }} started on: <b>{{ task.timestamp }}</b>
     </p>
     {% endfor %}
 {% endblock %}

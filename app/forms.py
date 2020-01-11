@@ -1,7 +1,8 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from flask_wtf import FlaskForm, widgets
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from app.models import User
+
 
 class LoginForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired()])
@@ -34,3 +35,7 @@ class TaskForm(FlaskForm):
 class SubtaskForm(FlaskForm):
 	subtask = TextAreaField('Your subtask name', validators=[DataRequired(), Length(min=1, max=50)])
 	submit = SubmitField('Submit')
+
+class SubtaskCompletionForm(FlaskForm):
+	status = BooleanField('')
+	#submit = SubmitField('Sign In')
