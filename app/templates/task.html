@@ -17,15 +17,14 @@
     <form method="POST" action="">
 	    {% for subtask in c_subtasks %}
             <p>
-                <input type="checkbox" name="status_checkbox" value="{{ subtask.id }}" checked>{{ subtask.name }}, {{ subtask.status }}
+                <input type="checkbox" name="status_checkbox" value={{ subtask.id }} checked>{{ subtask.name }}, {{ subtask.status }}
             </p>
 	    {% endfor %}
 	    {% for subtask in uc_subtasks %}
-            <p>
-                <input type="checkbox" name="status_checkbox" value="{{ subtask.id }}">{{ subtask.name }}
-            </p>
-	    {% endfor %}
-	    
-	<input type="submit" name="Submit">
+            
+             <p><input type="checkbox" name="status_checkbox" value={{ subtask.id }}>{{ subtask.name }}</p>
+
+	    {% endfor %}    
+	<input type="submit" name="submit" value="Check subtasks">
      </form>
 {% endblock %}

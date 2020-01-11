@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+	<p>Today: {{ today }}, {{ weekday }}</p>
 	<h1>Tasks this week...</h1>
+	<h3>{{ days_left }} days left</h3>
 		<form action="" method="post">
 		{{ form.hidden_tag() }}
 		<p>

@@ -5,6 +5,9 @@ from app.forms import LoginForm, RegistrationForm, TaskForm, SubtaskForm, Subtas
 from app.models import User, Task, Subtask
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.urls import url_parse
+import datetime 
+import dateutil.relativedelta as rel
+
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
@@ -17,9 +20,16 @@ def index():
 		db.session.commit()
 		flash('Your task is added!')
 		return redirect(url_for('index'))
-
+	
+	#getting days left
+	weekdays={0:'Monday',1:'Tuesday',2:'Wednesday',3:'Thursday',4:'Friday',5:'Saturday',6:'Sunday'}
+	today=datetime.date.today()
+	weekday=datetime.date.weekday(today)
+	days_left = 7-weekday
+	weekday=weekdays[weekday]
+	#Getting all tasks for the current_user
 	tasks = Task.query.filter_by(user_id = current_user.id)
-	return  render_template('index.html', title='Home',form=form,tasks = tasks)
+	return  render_template('index.html', title='Home', today=today, days_left=days_left,weekday=weekday,form=form,tasks = tasks)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
