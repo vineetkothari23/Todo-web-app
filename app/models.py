@@ -33,7 +33,11 @@ class Task(db.Model):
 	def completion_percent(self):
 		n_subtasks = Subtask.query.filter_by(task_id=self.id).count()
 		nc_subtasks = Subtask.query.filter_by(task_id=self.id,status=1).count()
-		return '{:.2f}'.format(nc_subtasks*100/n_subtasks)
+		if n_subtasks>0:
+			percent=str(int(nc_subtasks*100/n_subtasks))
+		else:
+			percent='0'
+		return percent
 
 class Subtask(db.Model):
 	id = db.Column(db.Integer, primary_key=True)

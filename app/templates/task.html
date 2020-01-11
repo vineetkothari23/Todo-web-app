@@ -1,29 +1,28 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block content %}
+{% block app_content %}
 	<h1>{{ task.name }}</h1>
 	<h1>{{ task.completion_percent() }}</h1>
-	<form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.subtask.label }}<br>
-            {{ form.subtask(cols=32, rows=4) }}<br>
-            {% for error in form.subtask.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+	<div class="row">
+		<div class="col-md-4">
+			{{ wtf.quick_form(form) }}
+		</div>
+    	</div>
     <form method="POST" action="">
 	    {% for subtask in c_subtasks %}
-            <p>
-                <input type="checkbox" name="status_checkbox" value={{ subtask.id }} checked>{{ subtask.name }}, {{ subtask.status }}
-            </p>
+
+	    <!-- Default unchecked -->
+		<div class="custom-control custom-checkbox">
+		    <input type="checkbox" class="custom-control-input" name="status_checkbox" value="{{ subtask.id }}" id="{{ subtask.id }}" checked>
+		    <label class="custom-control-label" for="{{ subtask.id }}">{{ subtask.name }}</label>
+		</div> 
 	    {% endfor %}
 	    {% for subtask in uc_subtasks %}
-            
-             <p><input type="checkbox" name="status_checkbox" value={{ subtask.id }}>{{ subtask.name }}</p>
-
+            	<div class="custom-control custom-checkbox">
+		    <input type="checkbox" class="custom-control-input" name="status_checkbox" value={{ subtask.id }} id="{{ subtask.id }}" >
+		    <label class="custom-control-label" for="{{ subtask.id }}" >{{ subtask.name }}</label>
+		</div>	
 	    {% endfor %}    
 	<input type="submit" name="submit" value="Check subtasks">
      </form>
