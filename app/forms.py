@@ -33,8 +33,8 @@ class TaskForm(FlaskForm):
 	submit = SubmitField('Submit')
 	
 class SubtaskForm(FlaskForm):
-	subtask = TextAreaField('Your subtask name', validators=[DataRequired(), Length(min=1, max=50)])
-	submit = SubmitField('Submit')
+	subtask = TextAreaField('', validators=[DataRequired(), Length(min=1, max=50)],description='Add your subtasks')
+	submit = SubmitField('Add')
 
 class SubtaskCompletionForm(FlaskForm):
 	status = BooleanField('')

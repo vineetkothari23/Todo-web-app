@@ -1,31 +1,28 @@
-<div class="card m-3" style="width: 17rem;">
-	<a href="{{ url_for('task', id=task.id) }}" style="color:black">
-	<!-- Card -->
-	<div class="card weather-card">
 
-	<!-- Card content -->
-	<div class="card-body pb-3">
-
-	<!-- Title -->
-		<h4 class="card-title font-weight-bold" >{{task.name}}</h4>
-	<!-- Percentage -->
-	<p class="card-text"></p>
-		<div class="d-flex justify-content-between">
-			<p class="display-1 degree" style="color:grey">{{task.completion_percent()}}<sup><h8 style="color:lightgrey"><small>%</small></h8></sup></p>
-			<i class="fas fa-sun-o fa-5x pt-3 amber-text"></i>
-		</div>
-
-	<!-- No of days left-->	
-	<div class="d-flex justify-content-between mb-4">
-		<p><i class=" grey-text pr-2"></i>{{days_left}} Days Left</p>
-	</div>
-	<!--Progress bar-->
-	<div class="progress md-progress">
-	<div class="progress-bar grey" role="progressbar" style="width: {{ task.completion_percent() }}%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-	</div>
+<a href="{{ url_for('task', id=task.id) }}">
+<table class = "table table-hover justify">
+<tr>
+    <td width="100px">
 	
-
-</div>
-</div>
+		<h3>{{task.completion_percent()}}%</h3>
+		<p>complete</p>
+	</td>
+    	<td>
+		<h3>{{ task.name }}</h3>
+		Posted {{ moment(task.timestamp).fromNow() }}.		
+	</td>
+	<td>	
+		<br>
+		<div class="progress md-progress" style="width:150px">
+		<div class="progress-bar grey" role="progressbar" style="width: {{ task.completion_percent() }}%"></div>
+		</div>
+		<br>
+	</td>
+	<td>
+	<br>
+	<a href="{{ url_for('delete_task', id = task.id) }}">
+	Delete</a>
+	</td>
+</tr>
+</table>
 </a>
-</div>

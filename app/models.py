@@ -24,6 +24,8 @@ class Task(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(50))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+	n_subtasks = db.Column(db.Integer, index=True, default=0)
+	nc_subtasks = db.Column(db.Integer, index=True, default=0)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	subtasks = db.relationship('Subtask', backref='task', lazy='dynamic')
 
@@ -31,17 +33,26 @@ class Task(db.Model):
 		return '<Task {}>'.format(self.name)
 	
 	def completion_percent(self):
-		n_subtasks = Subtask.query.filter_by(task_id=self.id).count()
-		nc_subtasks = Subtask.query.filter_by(task_id=self.id,status=1).count()
-		if n_subtasks>0:
-			percent=str(int(nc_subtasks*100/n_subtasks))
-		else:
-			percent='0'
+		nc_subtasks=self.recount_nc_subtasks()
+		n_subtasks=self.recount_n_subtasks()
+		percent=str(int(nc_subtasks*100/n_subtasks)) \
+			if self.n_subtasks>0 else '0'		
 		return percent
+	
+	def recount_n_subtasks(self):
+		temp = Subtask.query.filter_by(task_id=self.id).count()
+		self.n_subtasks=temp
+		return temp
+
+	def recount_nc_subtasks(self):
+		temp = Subtask.query.filter_by(task_id=self.id,status=1).count()
+		self.nc_subtasks = temp
+		return temp
+
 
 class Subtask(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(50))
+	name = db.Column(db.String(150))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	#1 is task complete, 0 is task incomplete 
 	status = db.Column(db.Integer, index=True, default=0)

@@ -5,7 +5,7 @@
     <hr>
     {% for task in tasks %}
     <p>
-    {{ task.name }} started on: <b>{{ task.timestamp }}</b>
+    <b>{{ task.name }}</b> started {{ moment(task.timestamp).fromNow() }}.
     </p>
     {% endfor %}
 {% endblock %}

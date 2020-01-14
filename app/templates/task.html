@@ -3,27 +3,33 @@
 
 {% block app_content %}
 	<h1>{{ task.name }}</h1>
-	<h1>{{ task.completion_percent() }}</h1>
+	<h4>{{ task.completion_percent() }} percent complete.</h4>
+	<p>Posted a day ago.</p>
 	<div class="row">
 		<div class="col-md-4">
 			{{ wtf.quick_form(form) }}
 		</div>
     	</div>
-    <form method="POST" action="">
-	    {% for subtask in c_subtasks %}
+	<hr>
+	{% if task.n_subtasks>0 %}
+		<h3>Subtasks</h3>
+	    <form method="POST" action="">
+		    {% for subtask in c_subtasks %}
 
-	    <!-- Default unchecked -->
-		<div class="custom-control custom-checkbox">
-		    <input type="checkbox" class="custom-control-input" name="status_checkbox" value="{{ subtask.id }}" id="{{ subtask.id }}" checked>
-		    <label class="custom-control-label" for="{{ subtask.id }}">{{ subtask.name }}</label>
-		</div> 
-	    {% endfor %}
-	    {% for subtask in uc_subtasks %}
-            	<div class="custom-control custom-checkbox">
-		    <input type="checkbox" class="custom-control-input" name="status_checkbox" value={{ subtask.id }} id="{{ subtask.id }}" >
-		    <label class="custom-control-label" for="{{ subtask.id }}" >{{ subtask.name }}</label>
-		</div>	
-	    {% endfor %}    
-	<input type="submit" name="submit" value="Check subtasks">
-     </form>
+		    <!-- Default unchecked -->
+			<div class="custom-control custom-checkbox">
+			    <input type="checkbox" class="custom-control-input" name="status_checkbox" value="{{ subtask.id }}" id="{{ subtask.id }}" checked>
+			    <label class="custom-control-label" for="{{ subtask.id }}">{{ subtask.name }}</label>
+			</div> 
+		    {% endfor %}
+		    {% for subtask in uc_subtasks %}
+		    	<div class="custom-control custom-checkbox">
+			    <input type="checkbox" class="custom-control-input" name="status_checkbox" value={{ subtask.id }} id="{{ subtask.id }}" >
+			    <label class="custom-control-label" for="{{ subtask.id }}" >{{ subtask.name }}</label>
+			</div>	
+		    {% endfor %}  
+		<br>  
+		<input type="submit" name="submit" value="Check subtasks">
+	     </form>
+	{% endif %}
 {% endblock %}
