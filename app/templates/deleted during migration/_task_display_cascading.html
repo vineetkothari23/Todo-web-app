@@ -1,0 +1,62 @@
+<div class="card m-3" style="width: 17rem;">
+	<a href="{{ url_for('task', id=task.id) }}" style="color:black">
+	<!-- Card -->
+	<div class="card weather-card">
+
+	<!-- Card content -->
+	<div class="card-body pb-3">
+
+	<!-- Title -->
+		<h4 class="card-title font-weight-bold" >{{task.name}}</h4>
+	<!-- Percentage -->
+	<p class="card-text"></p>
+		<div class="d-flex justify-content-between">
+			<p class="display-1 degree" style="color:grey">{{task.completion_percent()}}<sup><h8 style="color:lightgrey"><small>%</small></h8></sup></p>
+			<i class="fas fa-sun-o fa-5x pt-3 amber-text"></i>
+		</div>
+
+	<!-- No of days left-->	
+	<div class="d-flex justify-content-between mb-4">
+		<p><i class="fas fa-leaf fa-lg grey-text pr-2"></i>{{days_left}} Days Left</p>
+	</div>
+	<!--Progress bar-->
+	<div class="progress md-progress">
+	<div class="progress-bar black" role="progressbar" style="width: {{task.completion_percent}}%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+	</div>
+	</a>
+
+<div class="collapse-content">
+
+	<div class="collapse" id="collapseExample">
+	<div class="card card-form-2">
+  	<div class="card-body">
+
+		<h6 class="mt-2 mb-4 font-weight-bold">Subtasks</h6>
+
+		<!-- Filled-in checkbox -->
+		{% for subtask in subtasks %}
+
+		<div class="form-check red-checkbox pl-0 mb-3">
+		<input type="checkbox" class="form-check-input filled-in" id="filledInCheckbox" checked>
+		<label class="form-check-label" for="filledInCheckbox">{{subtask.name}}</label>
+		</div>
+
+		{% endfor %}
+
+
+	</div>
+	</div>
+	</div>
+
+		<hr class="">
+
+		<a class="btn btn-flat red-text p-1 my-1 mr-0 mml-1 collapsed" data-toggle="collapse" href="#collapseExample"  aria-expanded="false" aria-controls="collapseExample">Subtasks</a>
+
+	</div>
+
+	</div>
+
+	</div>
+
+</div>
+

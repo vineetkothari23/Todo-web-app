@@ -1,0 +1,10 @@
+<table class = "table table-hover">
+<tr>
+    <td width="30px">
+	<a href="{{ url_for('todo.delete_task', id=task.id) }}"><input type='checkbox'></input></a>
+	<a href="{{ url_for('todo.task', id= task.id) }}">
+	  {{ task.name }}
+	</a>
+</td>
+</tr>
+</table>

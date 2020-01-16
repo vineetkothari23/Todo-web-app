@@ -1,0 +1,32 @@
+
+<a href="{{ url_for('pages.challenge', pagename=challenge.name) }}">
+<table class = "table table-hover justify">
+<tr>
+    <td width="100px">
+
+		<h3>{{ challenge.n_followers }}</h3>
+		<p>followers</p>
+	</td>
+    	<td>
+		<h3>{{ challenge.name }}</h3>
+		{{ challenge.interval }} challenge.
+	</td>
+	<td>
+		<br>
+		<div class="progress md-progress" style="width:150px">
+		<div class="progress-bar grey" role="progressbar" style="width: {{ challenge.difficulty }}%"></div>
+		</div>
+		<br>
+	</td>
+	<td>
+	<br>
+	{% if challenge.followed_by(current_user) %}
+  <a href="{{ url_for('pages.unfollow_page',pagename = challenge.name) }}">Unfollow</a>
+  {% else %}
+  <a href="{{ url_for('pages.follow_page',pagename = challenge.name) }}">Follow</a>
+  {% endif %}
+
+	</td>
+</tr>
+</table>
+</a>

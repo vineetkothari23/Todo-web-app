@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>User: {{ user.username }}</h1>
+    <hr>
+    {% for task in tasks %}
+    <p>
+    <b>{{ task.name }}</b> started {{ moment(task.timestamp).fromNow() }}.
+    </p>
+    {% endfor %}
+{% endblock %}

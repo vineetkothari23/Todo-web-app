@@ -1,0 +1,8 @@
+You create a challenge
+People follow the challenge
+For each time interval hit, the followers get the tasks.
+Followers check the task, streak increases, they post about the checking of the task with a hashtag.
+
+There would be an index page for all challenges and an add button for challenge
+Each challenge would have it's own pages, with a follow button, description, difficulty level, no of followers, with people's posts with the hash tag.
+

@@ -1,5 +1,6 @@
 
-
+<a href="{{ url_for('task', id=task.id) }}">
+<table class = "table table-hover justify">
 <tr>
     <td width="100px">
 	
@@ -7,8 +8,7 @@
 		<p>complete</p>
 	</td>
     	<td>
-		<a href="{{ url_for('task', id=task.id) }}">
-		<h3>{{ task.name }}</h3></a>
+		<h3>{{ task.name }}</h3>
 		Posted {{ moment(task.timestamp).fromNow() }}.		
 	</td>
 	<td>	
@@ -24,4 +24,5 @@
 	Delete</a>
 	</td>
 </tr>
-
+</table>
+</a>

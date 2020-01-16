@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+	<p>Today: {{ moment(today).format('LL') }}, {{ weekday }}</p>
+	<h1>Tasks this week...</h1>
+	<p>{{ days_left }} days left</p>
+
+	{% if form %}
+		<div class="row">
+		<div class="col-md-4">
+		    {{ wtf.quick_form(form) }}
+		</div>
+		</div>
+	{% endif %}
+	<br>
+	<h2>Daily tasks</h2>
+	<div class="col">
+		<table>
+		{% for task in daily_tasks %}
+			{% include 'todo/_daily_task_display.html' %}
+		{% endfor %}
+		</table>
+	</div>
+	<h2>Weekly tasks</h2>
+	<div class="col">
+		{% for task in weekly_tasks %}
+			{% include 'todo/_task_display.html' %}
+		{% endfor %}
+	</div>
+
+{% endblock %}

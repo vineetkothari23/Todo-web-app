@@ -114,8 +114,8 @@ def task(id):
 @app.route('/delete_task/<id>')
 @login_required	
 def delete_task(id):
-	Subtask.query.filter_by(task_id = id).delete()	
-	Task.query.filter_by(id = id).delete()	
+	Task.query.filter_by(id = id).delete()
+	Subtask.query.filter_by(task_id = id).delete()
 	db.session.commit()
 	flash('Task deleted successfully')
 	return redirect(url_for('index'))
