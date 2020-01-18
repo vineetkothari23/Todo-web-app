@@ -1,18 +1,10 @@
 {% extends 'base.html' %}
 
 {% block app_content %}
+<div class="section" style="height:100%;">
 <h1>Challenges</h1>
 <p>All current challenges index.</p>
 <a href="{{ url_for('pages.add_page') }}">Add challenge</a>
-		{% if g.search_form %}
-                <form class="navbar-form navbar-left" method="get"
-                        action="{{ url_for('main.search') }}">
-                    <div class="form-group">
-                        {{ g.search_form.q(size=20, class='form-control',
-                            placeholder=g.search_form.q.label.text) }}
-                    </div>
-                </form>
-                {% endif %}
 <hr>
 <br>
 	<div class="col">
@@ -26,7 +18,5 @@
 	    {% if next_url %}
 	    	<a href="{{ next_url }}">Older challenges</a>
 	    {% endif %}
-
+</div>
 {% endblock %}
-
-

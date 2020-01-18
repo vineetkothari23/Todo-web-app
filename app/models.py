@@ -8,6 +8,8 @@ from app.search import add_to_index, remove_from_index, query_index
 from hashlib import md5
 import jwt
 from time import time
+import os
+from flask import send_from_directory
 
 class SearchableMixin(object):
 	@classmethod
@@ -55,28 +57,14 @@ followers = db.Table('followers',
 		db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 		)
 
-# class User(UserMixin, db.Model):
-# 	id = db.Column(db.Integer, primary_key=True)
-# 	username = db.Column(db.String(64), index=True, unique=True)
-# 	email = db.Column(db.String(120), index=True, unique=True)
-# 	password_hash = db.Column(db.String(128))
-# 	tasks = db.relationship('Task', backref='doer', lazy = 'dynamic')
-#
-# 	def __repr__(self):
-# 		return '<User {}>'.format(self.username)
-#
-# 	def set_password(self, password):
-# 		self.password_hash = generate_password_hash(password)
-#
-# 	def check_password(self, password):
-# 		return check_password_hash(self.password_hash, password)
-
-class User(UserMixin, db.Model):
+class User(UserMixin, SearchableMixin, db.Model):
+	__searchable__ = ['username', 'email']
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(64), index=True, unique=True)
 	email = db.Column(db.String(120), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
 	about_me = db.Column(db.String(140))
+	profile_pic=db.Column(db.String(10),default="None")
 	last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 	posts = db.relationship('Post', backref='author', lazy='dynamic')
 	tasks = db.relationship('Task', backref='doer', lazy = 'dynamic')
@@ -93,7 +81,6 @@ class User(UserMixin, db.Model):
 	challenges_followed = db.relationship('Challenge', secondary='challengers',
 											backref = db.backref('challengers', lazy = 'dynamic'))
 
-
 	def __repr__(self):
 		return '<User {}>'.format(self.username)
 
@@ -107,6 +94,11 @@ class User(UserMixin, db.Model):
 	def avatar(self,size):
 		digest=md5(self.email.lower().encode('utf-8')).hexdigest()
 		return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
+
+
+	def set_profile_pic(self,status):
+		self.profile_pic = status
+		print("Profile pic set:",self.profile_pic)
 
 	def is_following(self, user):
 		#Checks the complete column of followers for user.id
@@ -202,7 +194,8 @@ class Post(SearchableMixin, db.Model):
 	def __repr__(self): # for printing while deubgging
 		return '<Post {}>'.format(self.body)
 
-class Challenge(db.Model):
+class Challenge( SearchableMixin, db.Model):
+	__searchable__=['name', 'description']
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50), unique = True)
 	description = db.Column(db.String(600))

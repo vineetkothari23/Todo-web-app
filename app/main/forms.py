@@ -1,11 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, FileField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from app.models import User
 from flask import request
-
+import os
 
 class EditProfileForm(FlaskForm):
+	avatar = FileField(render_kw={'multiple': False})
 	username = StringField('Username', validators = [DataRequired()])
 	about_me = TextAreaField('About me', validators = [Length(min = 0, max = 140)])
 	submit=SubmitField('Submit')
@@ -20,9 +21,13 @@ class EditProfileForm(FlaskForm):
 			if user is not None:
 				raise ValidationError('Please user a different username.')
 
+	def allowed_file(filename):
+	    return '.' in filename and \
+	           filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+
 class PostForm(FlaskForm):
-	post = TextAreaField('Say something', validators=[DataRequired(), Length(min=1, max=140)])
-	submit = SubmitField('Submit')
+	post = TextAreaField('', validators=[DataRequired(), Length(min=1, max=140)], render_kw={"placeholder": "Say something about your recent challenge."})
+	submit = SubmitField('Shoot')
 
 class SearchForm(FlaskForm):
 	q = StringField('Search', validators=[DataRequired()])
@@ -33,5 +38,3 @@ class SearchForm(FlaskForm):
 		if 'csrf_enabled' not in kwargs:
 			kwargs['csrf_enabled'] = False
 		super(SearchForm, self).__init__(*args, **kwargs)
-	
-

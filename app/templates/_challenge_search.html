@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div class="section">
+    <h1>Search Results</h1>
+    {% include 'search_navbar.html' %}
+    {% for challenge in challenges %}
+        {% include 'pages/_challenge_display.html' %}
+    {% endfor %}
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_posts_url %} disabled{% endif %}">
+                <a href="{{ prev_posts_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span>
+                    Previous results
+                </a>
+            </li>
+            <li class="next{% if not next_posts_url %} disabled{% endif %}">
+                <a href="{{ next_posts_url or '#' }}">
+                    Next results
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <h3>Users</h3>
+    {% for user in users %}
+        {{user.username}}
+    {% endfor %}
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_users_url %} disabled{% endif %}">
+                <a href="{{ prev_users_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span>
+                    Previous results
+                </a>
+            </li>
+            <li class="next{% if not next_users_url %} disabled{% endif %}">
+                <a href="{{ next_users_url or '#' }}">
+                    Next results
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}

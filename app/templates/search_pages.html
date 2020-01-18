@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div class="section">
+    <h1>Search Results</h1>
+    <div class="sub-section">
+      <ul style="list-style-type:none;">
+      <li class="in-body navbar"><a href="{{ url_for('main.search') }}">Posts</a></li>
+      <li class="in-body navbar"><a href="{{ url_for('main.search_users') }}">Users</a></li>
+      <li active class="in-body navbar"><a href="{{ url_for('main.search_pages') }}">Challenges</a></li>
+    </ul>
+    <hr>
+    </div>
+
+    <h3>Challenges</h3>
+    {% for challenge in challenges %}
+        {% include '_challenge_display.html' %}
+    {% endfor %}
+
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span>
+                    <p>Previous</p>
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    <p>Next</p>
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}

@@ -2,22 +2,24 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
+    <div class="section" style="margin-top:0;">
     <h1>Hi, {{ current_user.username }}!</h1>
     {% if form %}
      <div class="row">
-        <div class="col-md-4">
             {{ wtf.quick_form(form) }}
-        </div>
+    </div>
     </div>
     {% endif %}
-    <br>
-    {% for post in posts %}
-	{% include '_post.html' %}
-    {% endfor %}
-    {% if prev_url %}
-    <a href="{{ prev_url }}">Newer posts</a>
-    {% endif %}
-    {% if next_url %}
-    <a href="{{ next_url }}">Older posts</a>
-    {% endif %}
+    <div class ="section">
+      <h3>Your feed</h3>
+      {% for post in posts %}
+  	     {% include '_post.html' %}
+      {% endfor %}
+      {% if prev_url %}
+      <a href="{{ prev_url }}">Newer posts</a>
+      {% endif %}
+      {% if next_url %}
+      <a href="{{ next_url }}">Older posts</a>
+      {% endif %}
+    </div>
 {% endblock %}

@@ -1,0 +1,19 @@
+<table style="width:100%">
+  <tr valign="center">
+    <td><img src="{{ user.avatar(64) }}"></td>
+    <td>
+      <div class="col"><p><b>{{ user.username }}</b> </p><sub-header>@{{ user.username }}</sub-header></div>
+      {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+      <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+    </td>
+    <td>
+      {% if user == current_user %}
+      <p><a href="{{ url_for('main.edit_profile') }}">Edit your profile</a></p>
+      {% elif not current_user.is_following(user) %}
+      <a href="{{ url_for('main.follow', username=user.username) }}"><p>Follow</p></a>
+      {% else %}
+      <a href="{{ url_for('main.unfollow', username=user.username) }}"><p>Unfollow</p></a>
+      {% endif %}
+  </td>
+  </tr>
+  </table>

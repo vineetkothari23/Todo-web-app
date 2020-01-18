@@ -2,28 +2,30 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
+<div class="section">
 	<p>Today: {{ moment(today).format('LL') }}, {{ weekday }}</p>
 	<h1>Tasks this week...</h1>
 	<p>{{ days_left }} days left</p>
 
 	{% if form %}
-		<div class="row">
-		<div class="col-md-4">
+		<div class="subsection">
 		    {{ wtf.quick_form(form) }}
 		</div>
-		</div>
 	{% endif %}
-	<br>
+</div>
+<div class="section">
 	<h2>Daily tasks</h2>
-	<div class="col">
-		<table>
+</div>
+		<div class = "grid-container" style="padding:0;">
 		{% for task in daily_tasks %}
 			{% include 'todo/_daily_task_display.html' %}
 		{% endfor %}
-		</table>
-	</div>
+		</div>
+
+	<div class="section">
 	<h2>Weekly tasks</h2>
-	<div class="col">
+	</div>
+		<div class = "grid-container" style="padding:0;">
 		{% for task in weekly_tasks %}
 			{% include 'todo/_task_display.html' %}
 		{% endfor %}

@@ -1,28 +1,16 @@
 
-<a href="{{ url_for('todo.task', id=task.id) }}">
-<table class = "table table-hover justify">
-<tr>
-    <td width="100px">
 
-		<h3>{{task.completion_percent()}}%</h3>
-		<p>complete</p>
-	</td>
-    	<td>
-		<h3>{{ task.name }}</h3>
-		Posted {{ moment(task.timestamp).fromNow() }}.
-	</td>
-	<td>
-		<br>
-		<div class="progress md-progress" style="width:150px">
-		<div class="progress-bar grey" role="progressbar" style="width: {{ task.completion_percent() }}%"></div>
-		</div>
-		<br>
-	</td>
-	<td>
-	<br>
-	<a href="{{ url_for('todo.delete_task', id = task.id) }}">
-	Delete</a>
-	</td>
-</tr>
-</table>
-</a>
+<div class="card" style="height:18em; padding:1em; width:32.6%;border-style:none; margin:0.1em; background-color:#fff;">
+  <a href="{{ url_for('todo.task', id=task.id) }}"><p><b>{{ task.name }}</b></p> </a>
+  Posted {{ moment(task.timestamp).fromNow() }}.
+  <br>
+  <br>
+	<h1 style="margin-top:0.1em;">{{task.completion_percent()}}%</h1>
+	<p>complete</p>
+	<div class="progress md-progress" style="width:150px">
+	   <div class="progress-bar grey" role="progressbar" style="width: {{ task.completion_percent() }}%"></div>
+	</div>
+  <br>
+  <a href="{{ url_for('todo.delete_task', id = task.id) }}">
+    Delete</a>
+</div>

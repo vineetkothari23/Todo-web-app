@@ -1,5 +1,7 @@
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
+from dotenv import load_dotenv
+basedir=os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir,'.env'))
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'second_todo_app'
@@ -13,3 +15,12 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['vineetskothari@gmail.com']
+
+    POSTS_PER_PAGE = 4
+
+    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
+
+    ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
+
+    PROFILE_PIC_DIR = 'static/uploads/users/profile_pics'
+    ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])

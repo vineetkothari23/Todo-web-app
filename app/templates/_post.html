@@ -1,14 +1,11 @@
-<table class = "table table-hover">
+
+<table class = "table">
   <tr>
   <td width="70px">
     <a href="{{ url_for('main.user',username=post.author.username) }}"><img src="{{ post.author.avatar(70) }}" /></a></td>
     <td>
-      {% set user_link %}
-      <span class="user_popup">
-        <a href="{{ url_for('main.user', username=post.author.username) }}">{{ post.author.username }}</a>
-      </span>
-      {% endset %}
-    said {{ moment(post.timestamp).fromNow() }}:
-    <br>{{ post.body }}</td>
+        <p><a href="{{ url_for('main.user', username=post.author.username) }}"><b>{{ post.author.username }}</b></a>
+          <sub-header>said {{ moment(post.timestamp).fromNow() }}:</sub-header></p>
+    <p>{{ post.body }}</p></td>
   </tr>
 </table>
