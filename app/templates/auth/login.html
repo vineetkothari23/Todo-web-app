@@ -3,6 +3,7 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
+    <div class="section">
     <h1>Sign In</h1>
     <p>New User? <a href="{{ url_for('auth.register') }}">Click to register!</a></p>
     <div class="row">
@@ -14,4 +15,5 @@
         Forgot Your Password?
         <a href="{{ url_for('auth.reset_password_request') }}">Click to Reset It</a>
     </p>
+    </div>
 {% endblock %}

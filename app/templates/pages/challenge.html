@@ -2,6 +2,7 @@
 
 {% block app_content %}
   <div class="section">
+    <a href="{{ url_for('pages.pages') }}">Back</a>
     <h1>{{ challenge.name }}</h1>
     <p>{{ challenge.description }}</p>
     <p>{{ challenge.n_followers }} followers</p>
@@ -17,17 +18,40 @@
         <h2>Your steak</h2>
         {% include 'pages/_challenge_task.html' %}
       </div>
-      <div class="subsection">
-    <h2>Posts</h2>
-    {% for post in posts %}
-	     {% include '_post.html' %}
-    {% endfor %}
-    {% if prev_url %}
-    <a href="{{ prev_url }}">Newer posts</a>
-    {% endif %}
-    {% if next_url %}
-    <a href="{{ next_url }}">Older posts</a>
-    {% endif %}
+
+    <div class="subsection">
+
+    <div class="inline">
+      <p>Posts</p>
+      <p>Followers</p>
     </div>
+
+    <div id="page_posts">
+      <h2>Posts</h2>
+      {% for post in posts %}
+  	     {% include '_post.html' %}
+      {% endfor %}
+      {% if prev_url %}
+      <a href="{{ prev_url }}">Newer posts</a>
+      {% endif %}
+      {% if next_url %}
+      <a href="{{ next_url }}">Older posts</a>
+      {% endif %}
+    </div>
+
+    <div id="page_followers">
+      <h2>Followers</h2>
+      {% for user in followers %}
+  	     {% include 'includes/_user_display_small.html' %}
+      {% endfor %}
+      {% if prev_url %}
+      <a href="{{ prev_url }}">Previous</a>
+      {% endif %}
+      {% if next_url %}
+      <a href="{{ next_url }}">Next</a>
+      {% endif %}
+      </div>
+    </div>
+
     </div>
 {% endblock %}

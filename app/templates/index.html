@@ -3,7 +3,7 @@
 
 {% block app_content %}
     <div class="section" style="margin-top:0;">
-    <h1>Hi, {{ current_user.username }}!</h1>
+    <h1>Hi, {{ current_user.first_name }}!</h1>
     {% if form %}
      <div class="row">
             {{ wtf.quick_form(form) }}

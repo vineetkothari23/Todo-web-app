@@ -78,14 +78,17 @@ def challenge(pagename):
 	prev_url = url_for('pages.challenge', pagename=pagename, page=posts.prev_num) if posts.has_prev else None
 	#need to pass next_url and preev
 	creator=User.query.filter_by(id=challenge.creator_id).first()
-	return render_template('pages/challenge.html',challenge=challenge, posts=posts.items, prev_url=prev_url, next_url=next_url, creator = creator)
+
+	followers = challenge.challengers
+	return render_template('pages/challenge.html',challenge=challenge, posts=posts.items, prev_url=prev_url, next_url=next_url, creator = creator,
+							followers=followers)
 
 @bp.route('/follow_page/<pagename>')
 @login_required
 def follow_page(pagename):
 	challenge = Challenge.query.filter_by(name=pagename).first()
 	if challenge is None:
-		flask('Challenge {} does not exist.'.format(pagename))
+		flash('Challenge {} does not exist.'.format(pagename))
 		return redirect(url_for('pages.pages'))
 	else:
 		challenge.follow_request(current_user)
@@ -98,7 +101,7 @@ def follow_page(pagename):
 def unfollow_page(pagename):
 	challenge = Challenge.query.filter_by(name=pagename).first()
 	if challenge is None:
-		flask('Challenge {} does not exist.'.format(pagename))
+		flash('Challenge {} does not exist.'.format(pagename))
 		return redirect(url_for('pages.pages'))
 	else:
 		challenge.unfollow_request(current_user)

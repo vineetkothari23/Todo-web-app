@@ -63,6 +63,8 @@ class User(UserMixin, SearchableMixin, db.Model):
 	username = db.Column(db.String(64), index=True, unique=True)
 	email = db.Column(db.String(120), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
+	first_name=db.Column(db.String(40), default="None")
+	last_name=db.Column(db.String(60), default = "None")
 	about_me = db.Column(db.String(140))
 	profile_pic=db.Column(db.String(10),default="None")
 	last_seen = db.Column(db.DateTime, default=datetime.utcnow)
@@ -77,7 +79,6 @@ class User(UserMixin, SearchableMixin, db.Model):
 				#secondaryjoin is for connections of user whom I am following
 				secondaryjoin = (followers.c.followed_id == id),
 				backref = db.backref('followers', lazy = 'dynamic'), lazy = 'dynamic')
-
 	challenges_followed = db.relationship('Challenge', secondary='challengers',
 											backref = db.backref('challengers', lazy = 'dynamic'))
 
@@ -138,6 +139,10 @@ class Task(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(50))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+	#Active Pending, Active on track, Active begin, Complete
+	challenge_id=db.Column(db.Integer, db.ForeignKey('challenge.id'), default=0)
+	status=db.Column(db.String, index=True, default='Active begin')
+	challenger_id=db.Column(db.Integer, db.ForeignKey('challengers.id'), default=0)
 	n_subtasks = db.Column(db.Integer, index=True, default=0)
 	nc_subtasks = db.Column(db.Integer, index=True, default=0)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -162,6 +167,24 @@ class Task(db.Model):
 		temp = Subtask.query.filter_by(task_id=self.id,status=1).count()
 		self.nc_subtasks = temp
 		return temp
+
+	def get_streak(self):
+		if self.challenger_id!=0:
+			challenger_row=challenger.query.filter_by(challenger_id=challenger_id)
+			return challenger_row.streak
+		else:
+			return None
+
+	def change_streak(self, val):
+		if self.challenger_id!=0:
+			challenger_row=challenger.query.filter_by(challenger_id=challenger_id)
+			challenger_row.streak+=val
+			db.session.commit()
+
+	#def add_challenge_tasks(self):
+
+
+	#():
 
 
 class Subtask(db.Model):
@@ -208,6 +231,7 @@ class Challenge( SearchableMixin, db.Model):
 	posts = db.relationship('Post', backref='challenge', lazy='dynamic')
 	n_followers = db.Column(db.Integer, default = 0)
 	creator_id = db.Column(db.Integer, default = 0)
+	follower_tasks=db.relationship('Task', backref='challenge',lazy='dynamic')
 
 	def __repr__(self): # for printing while deubgging
 		return '<Challenge {}>'.format(self.name, self.interval, self.total_days)
@@ -227,7 +251,9 @@ class Challenge( SearchableMixin, db.Model):
 			self.n_followers-=1
 
 challengers = db.Table('challengers',
+		db.Column('id', db.Integer, primary_key = True),
 		db.Column('challenge_id', db.Integer, db.ForeignKey('challenge.id')),
 		db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
 		db.Column('streak', db.Integer, default=0)
+		#db.Column('streak', db.Integer, db.ForeignKey('task.streak'))
 		)

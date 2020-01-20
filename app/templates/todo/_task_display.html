@@ -1,16 +1,16 @@
 
 
-<div class="card" style="height:18em; padding:1em; width:32.6%;border-style:none; margin:0.1em; background-color:#fff;">
+<div class="card" style="height:100%; padding:1em; width:32.6%;border-style:none; margin:0.1em; background-color:#fff;">
   <a href="{{ url_for('todo.task', id=task.id) }}"><p><b>{{ task.name }}</b></p> </a>
   Posted {{ moment(task.timestamp).fromNow() }}.
-  <br>
-  <br>
-	<h1 style="margin-top:0.1em;">{{task.completion_percent()}}%</h1>
-	<p>complete</p>
-	<div class="progress md-progress" style="width:150px">
-	   <div class="progress-bar grey" role="progressbar" style="width: {{ task.completion_percent() }}%"></div>
+	<div class="inline" style="justify-content:flex-start;margin-top:0.5em; align-content:flex-start;padding-bottom:0em;">
+    <h1 style="font-size:5em; margin:0em;">{{task.completion_percent()}}</h1>
+    <h1 style="margin:0em; font-size:2em; color:grey;">%</h1>
+  </div>
+	<sub-header style="justify-content:center; margin-bottom:0.1em;">complete</sub-header>
+	<div class="progress" style="width:93%;height:0.5em; margin-top:0.3em; ">
+	   <div class="progress-bar" role="progressbar" style="background-color:#000; width: {{ task.completion_percent() }}%"></div>
 	</div>
-  <br>
   <a href="{{ url_for('todo.delete_task', id = task.id) }}">
     Delete</a>
 </div>

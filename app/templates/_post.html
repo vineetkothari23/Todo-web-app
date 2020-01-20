@@ -4,7 +4,12 @@
   <td width="70px">
     <a href="{{ url_for('main.user',username=post.author.username) }}"><img src="{{ post.author.avatar(70) }}" /></a></td>
     <td>
-        <p><a href="{{ url_for('main.user', username=post.author.username) }}"><b>{{ post.author.username }}</b></a>
+        <p><a href="{{ url_for('main.user', username=post.author.username) }}">
+          <div class="inline">
+            <b>{{ post.author.first_name }} {{ post.author.last_name }} </b>
+            <sub-header>@{{ post.author.username }}</sub-header>
+          </div>
+        </a>
           <sub-header>said {{ moment(post.timestamp).fromNow() }}:</sub-header></p>
     <p>{{ post.body }}</p></td>
   </tr>

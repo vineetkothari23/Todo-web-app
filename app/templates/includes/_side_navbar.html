@@ -1,19 +1,17 @@
-<div class="sub-section">
+
 <h3 style="padding-left:1em;">Index</h3>
-<ul>
-    <li><a href="{{ url_for('main.index') }}"><h4>Explore</h4></a></li>
-    <li><a href="{{ url_for('pages.pages') }}"><h4>Challenges</h4></a></li>
-    <li><a href="{{ url_for('todo.tasks') }}"><h4>This week</h4></a></li>
-    <li><a href="{{ url_for('main.search') }}"><h4>Search</h4></a></li>
+<ul class="_side_navbar">
+    <li><a href="{{ url_for('main.index') }}"><p>Explore</p></a></li>
+    <li><a href="{{ url_for('pages.pages') }}"><p>Challenges</p></a></li>
+    <li><a href="{{ url_for('todo.tasks') }}"><p>This week</p></a></li>
+    <li><a href="{{ url_for('main.search') }}"><p>Search</p></a></li>
     <br>
     <br>
     <br>
     {% if current_user.is_anonymous %}
-    <li><a href="{{ url_for('auth.login') }}"><h4>Login</h4></a></li>
+    <li><a href="{{ url_for('auth.login') }}"><p>Login</p></a></li>
     {% else %}
-    <li><a href="{{ url_for('main.user', username=current_user.username) }}"><h4>Profile</h4></a></li>
-    <li><a href="{{ url_for('auth.logout') }}"><h4>Logout</h4></a></li>
+    <li><a href="{{ url_for('main.user', username=current_user.username) }}"><p>Profile</p></a></li>
+    <li><a href="{{ url_for('auth.logout') }}"><p>Logout</p></a></li>
     {% endif %}
 </ul>
-<hr>
-</div>

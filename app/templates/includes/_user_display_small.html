@@ -2,17 +2,19 @@
   <tr valign="center">
     <td><img src="{{ user.avatar(64) }}"></td>
     <td>
-      <div class="col"><p><b>{{ user.username }}</b> </p><sub-header>@{{ user.username }}</sub-header></div>
-      {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+      <a href="{{ url_for('main.user', username = user.username)}}">
+      <div class="inline" style="justify-content:flex-start; align-items: baseline;">
+        <p style="margin-right:0.2em;"><b>{{ user.first_name }} {{ user.last_name }}   </b> </p><sub-header>  @{{ user.username }}</sub-header></div>
+      </a>
       <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
     </td>
     <td>
-      {% if user == current_user %}
-      <p><a href="{{ url_for('main.edit_profile') }}">Edit your profile</a></p>
-      {% elif not current_user.is_following(user) %}
-      <a href="{{ url_for('main.follow', username=user.username) }}"><p>Follow</p></a>
-      {% else %}
-      <a href="{{ url_for('main.unfollow', username=user.username) }}"><p>Unfollow</p></a>
+      {% if current_user.username!=user.username %}
+        {% if not current_user.is_following(user) %}
+          <a href="{{ url_for('main.follow', username=user.username) }}"><p>Follow</p></a>
+        {% else %}
+          <a href="{{ url_for('main.unfollow', username=user.username) }}"><p>Unfollow</p></a>
+        {% endif %}
       {% endif %}
   </td>
   </tr>

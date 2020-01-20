@@ -32,7 +32,7 @@ def create_app(config_class=Config):
     mail.init_app(app)
     bootstrap.init_app(app)
     moment.init_app(app)
-    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTICSEARCH_URL'] else None
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']], verify_certs=False) if app.config['ELASTICSEARCH_URL'] else None
 
     #Registering the blurprints
     from app.errors import bp as errors_bp

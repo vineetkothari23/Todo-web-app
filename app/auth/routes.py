@@ -7,10 +7,13 @@ from app.auth.email import send_password_reset_email
 from flask import render_template,flash,redirect,url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
+from app.models import Post, Challenge
 from datetime import datetime
 
 @bp.route('/login',methods=['GET','POST'])
 def login():
+	Post.reindex()
+	Challenge.reindex()
 	#if already logging in, redirect to home page
 	if current_user.is_authenticated:
 		return redirect(url_for('main.index'))
@@ -44,7 +47,8 @@ def register():
 		return redirect(url_for('main.index'))
 	form = RegistrationForm()
 	if form.validate_on_submit():
-		user=User(username=form.username.data, email=form.email.data)
+		user=User(username=form.username.data, email=form.email.data,
+					first_name=form.first_name.data, last_name=form.last_name.data)
 		user.set_password(form.password.data)
 		db.session.add(user)
 		db.session.commit()
@@ -80,15 +84,3 @@ def reset_password(token):
 		flask('Your password has been reset.')
 		return redirect(url_for('auth.login'))
 	return render_template('auth/reset_password.html', form=form)
-	
-
-
-
-
-
-
-
-
-
-
-
