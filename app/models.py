@@ -130,6 +130,7 @@ class User(UserMixin, SearchableMixin, db.Model):
 		except:
 			return
 		return User.query.get(id)
+			
 
 @login.user_loader
 def load_user(id):
@@ -139,14 +140,15 @@ class Task(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(50))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-	#Active Pending, Active on track, Active begin, Complete
+	#Active Pending, Active on track, Complete
 	challenge_id=db.Column(db.Integer, db.ForeignKey('challenge.id'), default=0)
 	status=db.Column(db.String, index=True, default='Active begin')
-	challenger_id=db.Column(db.Integer, db.ForeignKey('challengers.id'), default=0)
+	#challenger_id=db.Column(db.Integer, db.ForeignKey('challengers.id'), default=0)
 	n_subtasks = db.Column(db.Integer, index=True, default=0)
 	nc_subtasks = db.Column(db.Integer, index=True, default=0)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	subtasks = db.relationship('Subtask', backref='task', lazy='dynamic')
+	#challenger_row = db.relationship('challenger', backref='task', lazy='dynamic')
 
 	def __repr__(self):
 		return '<Task {}>'.format(self.name)
@@ -175,16 +177,30 @@ class Task(db.Model):
 		else:
 			return None
 
-	def change_streak(self, val):
+	def change_streak(self, val): #here val would be +1 or -1
 		if self.challenger_id!=0:
 			challenger_row=challenger.query.filter_by(challenger_id=challenger_id)
 			challenger_row.streak+=val
 			db.session.commit()
+			return True
+		else:
+			return False
 
-	#def add_challenge_tasks(self):
+	def set_status(self, status):
+		self.status =  status
+		db.session.commit()
+		return True
 
+	def reset_streak(self):# setting streak back to zero
+			if self.challenger_id!=0:
+				challenger_row=challenger.query.filter_by(challenger_id=challenger_id)
+				challenger_row.streak=0
+				task.status = 'Active begin'
+				db.session.commit()
+				return True
+			else: #task is a normal task and not a challenge task
+				return False
 
-	#():
 
 
 class Subtask(db.Model):
@@ -231,7 +247,7 @@ class Challenge( SearchableMixin, db.Model):
 	posts = db.relationship('Post', backref='challenge', lazy='dynamic')
 	n_followers = db.Column(db.Integer, default = 0)
 	creator_id = db.Column(db.Integer, default = 0)
-	follower_tasks=db.relationship('Task', backref='challenge',lazy='dynamic')
+	#follower_tasks=db.relationship('Task', backref='challenge',lazy='dynamic')
 
 	def __repr__(self): # for printing while deubgging
 		return '<Challenge {}>'.format(self.name, self.interval, self.total_days)
@@ -251,9 +267,10 @@ class Challenge( SearchableMixin, db.Model):
 			self.n_followers-=1
 
 challengers = db.Table('challengers',
-		db.Column('id', db.Integer, primary_key = True),
-		db.Column('challenge_id', db.Integer, db.ForeignKey('challenge.id')),
+		#db.Column('id', db.Integer, primary_key = True),
+		#db.Column('challenge_id', db.Integer, db.ForeignKey('challenge.id')),
 		db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+		db.Column('task_id', db.Integer, db.ForeignKey('task.id')),
 		db.Column('streak', db.Integer, default=0)
 		#db.Column('streak', db.Integer, db.ForeignKey('task.streak'))
 		)

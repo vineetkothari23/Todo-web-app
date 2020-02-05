@@ -1,0 +1,6 @@
+
+<div class="card" style="height:3.8em; padding:1em; width:32.6%;border-style:none; margin:0.1em; background-color:#fff; display:flex; flex-direction:row;
+justify-content: space-around">
+  <a href="{{ url_for('todo.update_challenge', id=task.id) }}"><input type='checkbox' class='checkbox'></input></a>
+  <a href="{{ url_for('todo.task', id=task.id) }}"><p><b>{{ task.name }}{{ task.get_streak() }}{{ task.status }}</b></p> </a>
+</div>

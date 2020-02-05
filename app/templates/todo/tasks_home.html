@@ -31,4 +31,13 @@
 		{% endfor %}
 	</div>
 
+	<div class="section">
+	<h2>Challenge tasks</h2>
+	</div>
+		<div class = "grid-container" style="padding:0;">
+		{% for task in challenge_tasks %}
+			{% include 'todo/_challenge_task_display.html' %}
+		{% endfor %}
+	</div>
+
 {% endblock %}

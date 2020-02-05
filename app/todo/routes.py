@@ -27,9 +27,10 @@ def tasks():
 	days_left = 7-weekday
 	weekday=weekdays[weekday]
 	#Getting all tasks for the current_user
-	weekly_tasks = Task.query.filter(Task.user_id == current_user.id, Task.n_subtasks>0)
-	daily_tasks = Task.query.filter(Task.user_id == current_user.id, Task.n_subtasks == 0)
-	return  render_template('todo/tasks_home.html', title='Home', today=today, days_left=days_left,weekday=weekday,form=form,daily_tasks = daily_tasks, weekly_tasks = weekly_tasks)
+	weekly_tasks = Task.query.filter(Task.user_id == current_user.id, Task.n_subtasks>0, Task.challenge==None)
+	daily_tasks = Task.query.filter(Task.user_id == current_user.id, Task.n_subtasks == 0,Task.challenge==None)
+	challenge_tasks = Task.query.filter(Task.doer == current_user, Task.challenge_id>0, Task.status == 'Active pending')
+	return  render_template('todo/tasks_home.html', title='Home', today=today, days_left=days_left, weekday=weekday,form=form,daily_tasks = daily_tasks, weekly_tasks = weekly_tasks, challenge_tasks=challenge_tasks)
 
 @bp.route('/task/<id>', methods=['GET', 'POST'])
 @login_required
@@ -69,3 +70,14 @@ def delete_task(id):
 	db.session.commit()
 	flash('Task deleted successfully')
 	return redirect(url_for('todo.tasks'))
+
+@bp.route('/update_challenge/<id>')
+@login_required
+def update_challenge(id):
+	task=Task.query.filter_by(id = id).first_or_404()
+	if task.status=='Active pending':
+		task.set_status('Active on track')
+		task.change_streak(1)
+		flash('Congratulations! You are on track.')
+		redirect(ur_for('todo.tasks'))
+	redirect(ur_for('todo.tasks'))

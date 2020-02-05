@@ -92,7 +92,14 @@ def follow_page(pagename):
 		return redirect(url_for('pages.pages'))
 	else:
 		challenge.follow_request(current_user)
+		#add the task for the user for the particular challenger
+		task=Task(name = challenge.name,
+				  status = 'Active pending',
+				  doer = current_user,
+				  challenge = challenge)
+
 		db.session.commit()
+
 		flash('You are now following {}.'.format(pagename))
 		return redirect(url_for('pages.pages'))
 
@@ -105,6 +112,8 @@ def unfollow_page(pagename):
 		return redirect(url_for('pages.pages'))
 	else:
 		challenge.unfollow_request(current_user)
+		#remove the task with the challenge name
+		Task.query.filter_by(challenge=challenge, doer=current_user).delete()
 		db.session.commit()
 		flash('You stopped following {}.'.format(pagename))
 		return redirect(url_for('pages.pages'))
