@@ -130,7 +130,7 @@ class User(UserMixin, SearchableMixin, db.Model):
 		except:
 			return
 		return User.query.get(id)
-			
+
 
 @login.user_loader
 def load_user(id):
@@ -141,14 +141,18 @@ class Task(db.Model):
 	name = db.Column(db.String(50))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	#Active Pending, Active on track, Complete
-	challenge_id=db.Column(db.Integer, db.ForeignKey('challenge.id'), default=0)
+	challenge = db.relationship('Challenge')
+	challenge_id=db.Column(db.Integer, db.ForeignKey('challenge.id'))
 	status=db.Column(db.String, index=True, default='Active begin')
-	#challenger_id=db.Column(db.Integer, db.ForeignKey('challengers.id'), default=0)
+	#challenger_id=db.Column(db.Integer, db.ForeignKey('challengers.id'))
 	n_subtasks = db.Column(db.Integer, index=True, default=0)
 	nc_subtasks = db.Column(db.Integer, index=True, default=0)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	subtasks = db.relationship('Subtask', backref='task', lazy='dynamic')
+	streak = db.Column(db.Integer, default = 0)
 	#challenger_row = db.relationship('challenger', backref='task', lazy='dynamic')
+	#challenge = db.relationship('Challenge', secondary='challengers',
+	#							backref = db.backref('task', lazy = 'dynamic'))
 
 	def __repr__(self):
 		return '<Task {}>'.format(self.name)
@@ -171,16 +175,17 @@ class Task(db.Model):
 		return temp
 
 	def get_streak(self):
-		if self.challenger_id!=0:
-			challenger_row=challenger.query.filter_by(challenger_id=challenger_id)
-			return challenger_row.streak
+		#the task must have a challenge associated
+		if self.challenge!=None:
+			return self.streak
 		else:
 			return None
 
 	def change_streak(self, val): #here val would be +1 or -1
-		if self.challenger_id!=0:
-			challenger_row=challenger.query.filter_by(challenger_id=challenger_id)
-			challenger_row.streak+=val
+		#the task must have a challenge associated
+		#No checking of status done here.
+		if self.challenge!=None:
+			self.streak+=val
 			db.session.commit()
 			return True
 		else:
@@ -192,10 +197,10 @@ class Task(db.Model):
 		return True
 
 	def reset_streak(self):# setting streak back to zero
-			if self.challenger_id!=0:
-				challenger_row=challenger.query.filter_by(challenger_id=challenger_id)
-				challenger_row.streak=0
-				task.status = 'Active begin'
+			if self.challenge!=None:
+				#challenger_row=challengers.query.filter_by(challenge_id=self.challenge.id, user_id=self.user_id).first()
+				self.streak=0
+				self.status = 'Active pending'
 				db.session.commit()
 				return True
 			else: #task is a normal task and not a challenge task
@@ -257,8 +262,14 @@ class Challenge( SearchableMixin, db.Model):
 
 	def follow_request(self, user):
 		if not self.followed_by(user):
+			#insert_query = challenger.insert().values(challenge_id = self.id, \
+			#										  user_id = user.id, \
+			#										  task_id = task.id)
 			self.challengers.append(user)
+			#db.session.execute(insert_query)
+			#db.session.commit()
 			self.n_followers+=1
+			db.session.commit()
 		#ONce followed, create a recurring task for the user.
 
 	def unfollow_request(self, user):
@@ -267,10 +278,17 @@ class Challenge( SearchableMixin, db.Model):
 			self.n_followers-=1
 
 challengers = db.Table('challengers',
-		#db.Column('id', db.Integer, primary_key = True),
-		#db.Column('challenge_id', db.Integer, db.ForeignKey('challenge.id')),
+		db.Column('challenge_id', db.Integer, db.ForeignKey('challenge.id')),
 		db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-		db.Column('task_id', db.Integer, db.ForeignKey('task.id')),
-		db.Column('streak', db.Integer, default=0)
-		#db.Column('streak', db.Integer, db.ForeignKey('task.streak'))
+		#db.Column('task_id', db.Integer, db.ForeignKey('task.id')),
+		#db.Column('streak', db.Integer, default=0)
 		)
+#TODO Feb 8 22:18: Need to configure a class table for challengers.
+# class challengers(db.Model):
+# 	challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'))
+# 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+# 	task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
+# 	streak = db.Column(db.Integer, default = 0)
+# 	challenge = db.relationship('Challenge', backref = 'challenge', lazy='dynamic')
+# 	user = db.relationship('User', backref = 'challenger_row', lazy='dynamic')
+# 	task = db.relationship('Task', backref = 'challenger_row', lazy='dynamic')

@@ -3,7 +3,7 @@ from app import  db
 from app.pages import bp
 from app.pages.forms import CreateChallengeForm, EditChallengeForm
 from app.main.forms import  SearchForm
-from app.models import User, Challenge, Post
+from app.models import User, Challenge, Post, Task
 from flask import render_template,flash,redirect,url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -92,14 +92,14 @@ def follow_page(pagename):
 		return redirect(url_for('pages.pages'))
 	else:
 		challenge.follow_request(current_user)
-		#add the task for the user for the particular challenger
 		task=Task(name = challenge.name,
 				  status = 'Active pending',
 				  doer = current_user,
 				  challenge = challenge)
-
+		db.session.add(task)
 		db.session.commit()
-
+		#add the task for the user for the particular challenger
+		#problem here.
 		flash('You are now following {}.'.format(pagename))
 		return redirect(url_for('pages.pages'))
 

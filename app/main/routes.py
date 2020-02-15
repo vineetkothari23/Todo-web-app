@@ -1,7 +1,7 @@
 from flask import current_app, g
 from app import  db
 from app.main.forms import EditProfileForm, PostForm, SearchForm
-from app.models import User, Post, Challenge
+from app.models import User, Post, Challenge, Task
 from app.auth.email import send_password_reset_email
 from flask import render_template,flash,redirect,url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
@@ -28,12 +28,11 @@ def before_request():
 		#			,set streak to 0 and change task status = 'Acive pending'
 		#CASE 3: if the task status = 'Active complete',
 		#			, do nothing
-		time_dict={0:timedelta(days=1).total_seconds(),
-					1: timedelta(weeks=1).total_seconds(),
-					2:	timedelta(months=1).total_seconds()}
+		time_dict={0:timedelta(seconds=30).total_seconds(),
+					1: timedelta(days=7).total_seconds(),
+					2:	timedelta(days=30).total_seconds()}
 		current_time =  datetime.utcnow()
-		last_seen = current_user.last_seen() \
-					if current_user.last_seen()!=None else datetime.utcnow()
+		last_seen = current_user.last_seen if current_user.last_seen!=None else current_time
 		try:
 			time_diff = (current_time-last_seen).total_seconds()
 		except:
@@ -41,15 +40,13 @@ def before_request():
 
 		for challenge in current_user.challenges_followed:
 			task = Task.query.filter_by(challenge=challenge).first()
-			challenger_row = challengers.query.filter_by(user_id=current_user.id,
-										challenge_id=challenge.id).first()
 			if task!=None or task.status!='Complete':
 				if time_diff > time_dict[challenge.interval]:
-					if task.status == 'Active on track' and challenger_row.streak < challenge.total_days:
+					if task.status == 'Active on track' and task.streak < challenge.total_days:
 						task.set_status('Active pending')
 					elif task.status == 'Active pending':
 						#add reset_streak()
-						challenger_row.steak=0
+						task.steak=0
 						db.session.commit()
 
 				#else: do nothing
